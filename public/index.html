@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyMLH Hackathon Project</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>MyMLH Connector</h1>
+            <p>Connect to the MLH Internal Hackathon 2025</p>
+        </header>
+
+        <main id="app">
+            <!-- Login State -->
+            <div id="login-section">
+                <p>Please log in to access your MLH profile.</p>
+                <a href="/login" class="btn-login">Login with MyMLH</a>
+            </div>
+
+            <!-- Profile State -->
+            <div id="profile-section" class="hidden">
+                <h2>Welcome, <span id="user-name">Hacker</span>!</h2>
+
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <div class="avatar-placeholder" id="avatar"></div>
+                        <div class="profile-info">
+                            <h3 id="full-name"></h3>
+                            <p id="email"></p>
+                        </div>
+                    </div>
+
+                    <div class="profile-details">
+                        <div class="detail-item">
+                            <span class="label">School</span>
+                            <span class="value" id="school">Loading...</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Major</span>
+                            <span class="value" id="major">Loading...</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Level of Study</span>
+                            <span class="value" id="level">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="sorting-hat-section" style="margin-top: 30px; text-align: center;">
+                    <button id="sort-btn" class="btn-primary">🎩 Let the Tech Sorting Hat Decide My Fate 🎩</button>
+
+                    <div id="sorting-result" class="hidden card-flip-container">
+                        <div class="house-card">
+                            <h2 id="house-name"></h2>
+                            <p id="house-desc" style="font-style: italic;"></p>
+                            <hr>
+                            <div class="magic-item">
+                                <strong>Wand:</strong> <span id="wand-type"></span>
+                            </div>
+                            <div class="magic-item">
+                                <strong>Patronus:</strong> <span id="patronus-type"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="raw-data-section"
+                    style="margin-top: 40px; text-align: left; border-top: 1px solid #eee; padding-top: 20px;">
+                    <h4 style="color: #999; cursor: pointer;"
+                        onclick="document.getElementById('raw-json').classList.toggle('hidden')">Show/Hide Raw API
+                        Response</h4>
+                    <pre id="raw-json" class="hidden"
+                        style="background: #f4f4f4; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 11px; color: #555;"></pre>
+                </div>
+
+                <button id="logout-btn" class="btn-secondary">Logout</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="sortingHat.js"></script>
+    <script>
+        // Global error handler
+        window.onerror = function (msg, url, lineNo, columnNo, error) {
+            alert('Error: ' + msg + '\nLine: ' + lineNo);
+            return false;
+        };
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const loginSection = document.getElementById('login-section');
+            const profileSection = document.getElementById('profile-section');
+            let currentUser = null;
+
+            // Check for token in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            if (token) {
+                localStorage.setItem('mlh_access_token', token);
+                window.history.replaceState({}, document.title, "/");
+                showProfile(token);
+            } else {
+                const storedToken = localStorage.getItem('mlh_access_token');
+                if (storedToken) {
+                    showProfile(storedToken);
+                } else {
+                    showLogin();
+                }
+            }
+
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                localStorage.removeItem('mlh_access_token');
+                showLogin();
+            });
+
+            document.getElementById('sort-btn').addEventListener('click', () => {
+                try {
+                    if (!currentUser) {
+                        alert("No user data found!");
+                        return;
+                    }
+
+                    // Verify sortingHat.js loaded
+                    if (typeof sortHacker !== 'function') {
+                        throw new Error("sortingHat.js failed to load or sortHacker is not defined");
+                    }
+
+                    const result = sortHacker(currentUser);
+                    displaySortingResult(result);
+                } catch (e) {
+                    console.error(e);
+                    alert("Sorting Error: " + e.message);
+                }
+            });
+
+            function showLogin() {
+                loginSection.classList.remove('hidden');
+                profileSection.classList.add('hidden');
+            }
+
+            async function showProfile(token) {
+                loginSection.classList.add('hidden');
+                profileSection.classList.remove('hidden');
+
+                try {
+                    const response = await fetch('/api/me', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch user data');
+                    }
+
+                    const userData = await response.json();
+                    currentUser = userData;
+                    renderUserData(userData);
+                } catch (error) {
+                    console.error(error);
+                    alert('Session expired or invalid. Please login again.');
+                    localStorage.removeItem('mlh_access_token');
+                    showLogin();
+                }
+            }
+
+            function renderUserData(user) {
+                document.getElementById('user-name').textContent = user.first_name;
+                document.getElementById('full-name').textContent = `${user.first_name} ${user.last_name}`;
+                document.getElementById('email').textContent = user.email;
+
+                const initials = (user.first_name[0] + user.last_name[0]).toUpperCase();
+                document.getElementById('avatar').textContent = initials;
+
+                if (user.education && user.education.length > 0) {
+                    const edu = user.education[0];
+                    document.getElementById('school').textContent = edu.school_name || 'N/A';
+                    document.getElementById('major').textContent = edu.major || 'N/A';
+                    document.getElementById('level').textContent = edu.level_of_study || 'N/A';
+                } else {
+                    document.getElementById('school').textContent = 'No education info';
+                    document.getElementById('major').textContent = '-';
+                    document.getElementById('level').textContent = '-';
+                }
+
+                // Show raw JSON (hidden by default now)
+                document.getElementById('raw-json').textContent = JSON.stringify(user, null, 2);
+            }
+
+            function displaySortingResult(result) {
+                const resultDiv = document.getElementById('sorting-result');
+                const btn = document.getElementById('sort-btn');
+
+                // Hide button, show result
+                btn.classList.add('hidden');
+                resultDiv.classList.remove('hidden');
+
+                // Populate content
+                const houseCard = resultDiv.querySelector('.house-card');
+                document.getElementById('house-name').textContent = `House ${result.house.name}`;
+                document.getElementById('house-name').style.color = result.house.color;
+                document.getElementById('house-desc').textContent = result.house.description;
+                document.getElementById('wand-type').textContent = result.wand;
+                document.getElementById('patronus-type').textContent = result.patronus;
+
+                // Apply House Color Border
+                houseCard.style.borderTop = `5px solid ${result.house.color}`;
+            }
+        });
+    </script>
+</body>
+
+</html>
