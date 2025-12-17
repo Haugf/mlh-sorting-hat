@@ -1,11 +1,9 @@
 const HOUSES = [
-    { name: "Hanson", color: "#2196F3", trait: "Hardware", description: "Like Hanson the Hippo, you build with strength. Hardware is your playground.", image: "images/hippo.jpg" },
-    { name: "Gene", color: "#FFC107", trait: "Debugging", description: "Like Gene the Giraffe, you spot bugs from a mile away. You reach new heights in code.", image: "images/giraffe.jpg" },
-    { name: "Jewels", color: "#F44336", trait: "Connection", description: "Like Jewels the Jumpercable Jellyfish, you bring energy and connect systems together.", image: "images/jellyfish.jpg" },
-    { name: "Crypto", color: "#4CAF50", trait: "Security", description: "Like Crypto the Chameleon, you adapt to any environment and keep secrets safe.", image: "images/chameleon.jpg" }
+    { name: "Hanson", color: "#2196F3", trait: "Hardware", description: "Like Hanson the Hippo, you build with strength. Hardware is your playground.", image: "images/hippo.jpg", patronus: "The Rust Crab" },
+    { name: "Gene", color: "#FFC107", trait: "Debugging", description: "Like Gene the Giraffe, you spot bugs from a mile away. You reach new heights in code.", image: "images/giraffe.jpg", patronus: "The Rubber Duck" },
+    { name: "Jewels", color: "#F44336", trait: "Connection", description: "Like Jewels the Jumpercable Jellyfish, you bring energy and connect systems together.", image: "images/jellyfish.jpg", patronus: "The Octocat" },
+    { name: "Crypto", color: "#4CAF50", trait: "Security", description: "Like Crypto the Chameleon, you adapt to any environment and keep secrets safe.", image: "images/chameleon.jpg", patronus: "The Linux Penguin" }
 ];
-
-const PATRONUSES = ["Rubber Duck", "Octocat", "Docker Whale", "Linux Penguin", "Firefox", "Python", "Rust Crab", "Go Gopher"];
 
 const WANDS = [
     "13-inch MacBook Pro, M1 Core",
@@ -29,8 +27,7 @@ function getHash(str) {
 
 function sortHacker(user) {
     // 1. Determine House (Deterministic based on ID)
-    // Fallback to "guest" if ID is missing (shouldn't happen for logged in)
-    const idHash = getHash(user.id || "guest");
+    const idHash = getHash(String(user.id || "guest"));
     const houseIndex = idHash % HOUSES.length;
     const house = HOUSES[houseIndex];
 
@@ -46,14 +43,8 @@ function sortHacker(user) {
     const wandIndex = schoolHash % WANDS.length;
     const wand = WANDS[wandIndex];
 
-    // 3. Determine Patronus (Based on Account Creation Time or Name)
-    // Fallback to name hash if created_at is missing
-    let seed = user.created_at;
-    if (!seed) {
-        seed = getHash((user.first_name || "") + (user.last_name || ""));
-    }
-    const patronusIndex = seed % PATRONUSES.length;
-    const patronus = PATRONUSES[patronusIndex];
+    // 3. Determine Patronus (Linked to House)
+    const patronus = house.patronus;
 
     return {
         house,

@@ -212,10 +212,28 @@ header p {
 
 .shape {
     position: absolute;
-    color: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.3);
     font-family: monospace;
     font-weight: bold;
     user-select: none;
+}
+
+.shape:nth-child(3n) {
+    color: rgba(33, 150, 243, 0.8);
+    /* Blue */
+    text-shadow: 0 0 5px rgba(33, 150, 243, 0.5);
+}
+
+.shape:nth-child(3n+1) {
+    color: rgba(255, 193, 7, 0.8);
+    /* Yellow */
+    text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
+}
+
+.shape:nth-child(3n+2) {
+    color: rgba(244, 67, 54, 0.8);
+    /* Red */
+    text-shadow: 0 0 5px rgba(244, 67, 54, 0.5);
 }
 
 @keyframes float {
