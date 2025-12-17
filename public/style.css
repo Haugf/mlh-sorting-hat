@@ -1,13 +1,16 @@
 :root {
-    --primary-color: #C92C4A;
-    /* MLH Red-ish */
-    --secondary-color: #1F2D3D;
-    --background-color: #F9FAFC;
-    --card-bg: #FFFFFF;
-    --text-color: #333333;
-    --text-light: #777777;
-    --border-radius: 8px;
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --primary-color: #bb86fc;
+    /* Magic Purple */
+    --secondary-color: #03dac6;
+    /* Magic Teal */
+    --background-color: #121212;
+    /* Deep Dark */
+    --card-bg: rgba(30, 30, 30, 0.8);
+    /* Glassy Dark */
+    --text-color: #e0e0e0;
+    --text-light: #a0a0a0;
+    --border-radius: 12px;
+    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
 body {
@@ -165,7 +168,7 @@ header p {
 }
 
 .house-card {
-    background: white;
+    background: var(--card-bg);
     border-radius: 8px;
     padding: 30px;
     margin-top: 20px;
@@ -193,5 +196,40 @@ header p {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* Floating Code Background */
+.background-shapes {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.shape {
+    position: absolute;
+    color: rgba(255, 255, 255, 0.15);
+    font-family: monospace;
+    font-weight: bold;
+    user-select: none;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
     }
 }

@@ -9,10 +9,11 @@
 </head>
 
 <body>
+    <div class="background-shapes" id="background-shapes"></div>
     <div class="container">
         <header>
-            <h1>MyMLH Connector</h1>
-            <p>Connect to the MLH Internal Hackathon 2025</p>
+            <h1>The Tech Sorting Hat</h1>
+            <p>Discover Your True Hacker House</p>
         </header>
 
         <main id="app">
@@ -170,12 +171,25 @@
             }
 
             function renderUserData(user) {
-                document.getElementById('user-name').textContent = user.first_name;
-                document.getElementById('full-name').textContent = `${user.first_name} ${user.last_name}`;
-                document.getElementById('email').textContent = user.email;
+                if (!user) return;
 
-                const initials = (user.first_name[0] + user.last_name[0]).toUpperCase();
-                document.getElementById('avatar').textContent = initials;
+                const firstName = user.first_name || 'Hacker';
+                const lastName = user.last_name || '';
+                const email = user.email || 'No email provided';
+
+                document.getElementById('user-name').textContent = firstName;
+                document.getElementById('full-name').textContent = `${firstName} ${lastName}`.trim();
+                document.getElementById('email').textContent = email;
+
+                // Avatar (Initials) - Safe check
+                let initials = 'H';
+                if (firstName && firstName.length > 0) {
+                    initials = firstName[0];
+                    if (lastName && lastName.length > 0) {
+                        initials += lastName[0];
+                    }
+                }
+                document.getElementById('avatar').textContent = initials.toUpperCase();
 
                 if (user.education && user.education.length > 0) {
                     const edu = user.education[0];
@@ -211,6 +225,32 @@
                 // Apply House Color Border
                 houseCard.style.borderTop = `5px solid ${result.house.color}`;
             }
+
+            // Generate Floating Code
+            function createFloatingCode() {
+                const symbols = ['{ }', '</>', 'function()', 'if', 'else', 'return', '0', '1', 'var', 'const', '=>', ';'];
+                const container = document.getElementById('background-shapes');
+                const count = 20;
+
+                for (let i = 0; i < count; i++) {
+                    const span = document.createElement('span');
+                    span.classList.add('shape');
+                    span.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+
+                    // Random positioning
+                    span.style.left = Math.random() * 100 + 'vw';
+                    span.style.top = Math.random() * 100 + 'vh';
+                    span.style.fontSize = (Math.random() * 20 + 10) + 'px';
+
+                    // Random animation
+                    const duration = Math.random() * 10 + 10;
+                    const delay = Math.random() * 5;
+                    span.style.animation = `float ${duration}s linear ${delay}s infinite`;
+
+                    container.appendChild(span);
+                }
+            }
+            createFloatingCode();
         });
     </script>
 </body>
