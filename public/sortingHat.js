@@ -1,8 +1,8 @@
 const HOUSES = [
-    { name: "Stackoverflow", color: "#F48024", trait: "Resourcefulness", description: "You find answers where others see only errors. Copy-paste is your spellbook." },
-    { name: "Segfault", color: "#D32F2F", trait: "Bravery", description: "You code close to the metal and fear no memory leak. You live life on the edge (case)." },
-    { name: "Div-Center", color: "#9C27B0", trait: "Artistry", description: "You bring order and beauty to the chaotic DOM. You align the unalignable." },
-    { name: "Recursion", color: "#2E7D32", trait: "Wisdom", description: "To understand the house, you must first understand the house. You see the infinite loop in all things." }
+    { name: "Hanson", color: "#2196F3", trait: "Hardware", description: "Like Hanson the Hippo, you build with strength. Hardware is your playground.", image: "images/hippo.jpg" },
+    { name: "Gene", color: "#FFC107", trait: "Debugging", description: "Like Gene the Giraffe, you spot bugs from a mile away. You reach new heights in code.", image: "images/giraffe.jpg" },
+    { name: "Jewels", color: "#F44336", trait: "Connection", description: "Like Jewels the Jumpercable Jellyfish, you bring energy and connect systems together.", image: "images/jellyfish.jpg" },
+    { name: "Crypto", color: "#4CAF50", trait: "Security", description: "Like Crypto the Chameleon, you adapt to any environment and keep secrets safe.", image: "images/chameleon.jpg" }
 ];
 
 const PATRONUSES = ["Rubber Duck", "Octocat", "Docker Whale", "Linux Penguin", "Firefox", "Python", "Rust Crab", "Go Gopher"];

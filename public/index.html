@@ -57,6 +57,7 @@
 
                     <div id="sorting-result" class="hidden card-flip-container">
                         <div class="house-card">
+                            <img id="mascot-image" src="" alt="Mascot" class="mascot-img">
                             <h2 id="house-name"></h2>
                             <p id="house-desc" style="font-style: italic;"></p>
                             <hr>
@@ -221,6 +222,11 @@
                 document.getElementById('house-desc').textContent = result.house.description;
                 document.getElementById('wand-type').textContent = result.wand;
                 document.getElementById('patronus-type').textContent = result.patronus;
+
+                // Set Image
+                const img = document.getElementById('mascot-image');
+                img.src = result.house.image;
+                img.style.borderColor = result.house.color;
 
                 // Apply House Color Border
                 houseCard.style.borderTop = `5px solid ${result.house.color}`;
